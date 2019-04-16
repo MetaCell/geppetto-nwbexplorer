@@ -172,7 +172,10 @@ class NWBFileService {
                   G.addWidget(0).then(w => {
                     w.plotOptions.xaxis.title.font.color = '#2d5a88'
                     w.plotOptions.yaxis.title.font.color = '#2d5a88'
-                    w.plotXYData(Instances.getInstance($instance$.getPath()), Instances.getInstance($instance$.getPath().split('.')[0] + '.time')).setPosition(130, 35).setName($instance$.getPath());
+                    w.plotXYData(Instances.getInstance($instance$.getPath()), Instances.getInstance($instance$.getPath().split('.')[0] + '.time')).setPosition(130, 35).setName($instance$.getPath()).showLegend(false);
+                    if (!w.plotOptions.yaxis.title.text) {
+                      w.setOptions({yaxis: {title: {text: 'Arbitrary unit (Au)'}}, margin: {l: 40}})
+                    }
                   });
                 }
               }
