@@ -7,8 +7,13 @@ const TYPE_INCLUDE_REGEX = /^(?!.*details)Model.nwblib.*$/;
 
 function mapModelPathToList ( path , modelSettings) {
   const instance = Instances.getInstance(path);
+  let description
   try {
-    var description = Instances.getInstance(path + '.description');
+    if (instance.getName() == "unsupported") {
+      description = "Not yet supported."
+    } else {
+      description = Instances.getInstance(path + '.description').getValue().wrappedObj.value.text;
+    }
   } catch (Error){
     
   }
@@ -16,7 +21,7 @@ function mapModelPathToList ( path , modelSettings) {
   return {
     path,
     type: instance.getType().getName(),
-    description: description ? description.getValue().wrappedObj.value.text : '-',
+    description: description ? description : '-',
     ...modelSettings
   }
 }
@@ -33,6 +38,7 @@ export default class NWBListViewer extends Component {
     this.updateDetailsWidget = this.props.updateDetailsWidget ? this.props.updateDetailsWidget : () => console.debug('updateDetailsWidget not defined in ' + typeof this);
     this.modelSettings = {};
     this.state = { update: 0 }
+    this.pathFilter = this.props.pathFilter ? this.props.pathFilter.bind(this) : this.pathFilter.bind(this);
   }
 
   componentDidUpdate () {
@@ -60,9 +66,29 @@ export default class NWBListViewer extends Component {
     this.addToPlot(props)
   }
 
+  pathFilter (pathObj) {
+    const { path, type } = pathObj;
+    const { pathPattern } = this.props;
+    let unsupported
+
+    if (type.match(TYPE_INCLUDE_REGEX)) {
+      if (path.match(pathPattern)) {
+        return true
+      } else {
+        try {
+          return Instances.getInstance(path).getName() == "unsupported";
+        } catch (Error) {
+          return false
+        }
+      }
+    } else {
+      return false
+    }
+  }
+
   getInstances () {
     return GEPPETTO.ModelFactory.allPaths.
-      filter(({ path, type }) => path.match(this.props.pathPattern) && type.match(TYPE_INCLUDE_REGEX) )
+      filter(this.pathFilter)
       .map(({ path }) => mapModelPathToList(path, this.getModelSettings (path)));
   }
 
