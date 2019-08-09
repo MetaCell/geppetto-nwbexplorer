@@ -47,10 +47,16 @@ const styles = theme => ({
   },
   download: { 
     top: "20px",
-    left: "15px",
+    left: "48px",
     opacity: 0.5,
     position: "absolute"
   },
+  play: { 
+    top: "20px",
+    left: "24px",
+    opacity: 0.5,
+    position: "absolute"
+  }
 
 });
 
@@ -60,13 +66,11 @@ class ImageViewer extends Component {
     imageLoading: true
   };
 
-  handleNext = () => {
-    this.setState(({ activeStep }) => ({ activeStep: activeStep + 1 }));
-    this.setState({ imageLoading: true })
-  };
+  headerButtons = ["download", "play", "pause"]
+  showNextImage = this.showNextImage.bind(this);
 
-  handleBack = () => {
-    this.setState(({ activeStep }) => ({ activeStep:  activeStep - 1 }));
+  handleNext = step => {
+    this.setState(({ activeStep }) => ({ activeStep: activeStep + step }));
     this.setState({ imageLoading: true })
   };
 
@@ -74,23 +78,44 @@ class ImageViewer extends Component {
     const { activeStep } = this.state
     const { offsetX } = e.nativeEvent
     const { offsetWidth } = e.target
-
-    if (!e.target.className.includes("download")) {
+    const className = e.target.className
+    
+    if (!this.headerButtons.some(iconName => className.includes(iconName))) {
       if (offsetX > offsetWidth / 2) {
         if (activeStep < num_samples - 1) {
-          this.handleNext()
+          this.handleNext(+1)
         }
       } else {
         if (activeStep > 0) {
-          this.handleBack()
+          this.handleNext(-1)
         }
       }
     }
   }
+
+  showNextImage () {
+    const { timestamps } = this.props
+    this.setState(({ activeStep }) => ({ 
+      activeStep: activeStep < timestamps.length - 1 ? activeStep + 1 : 0,
+      imageLoading: true
+    }))
+    
+  }
+
+  autoPlay () {
+    if (this.interval) {
+      clearInterval(this.interval);
+      this.interval = null;
+    } else {
+      this.showNextImage()
+      this.interval = setInterval(this.showNextImage, 5000);
+    }
+    this.setState(({ autoplayToggled }) => ({ autoplayToggled: !autoplayToggled }))
+  } 
   
   render () {
     const { imagePaths, timestamps, classes } = this.props;
-    const { activeStep, hoverImg, imageLoading } = this.state;
+    const { activeStep, hoverImg, imageLoading, autoplayToggled } = this.state;
     
     return (
       <div 
@@ -128,6 +153,14 @@ class ImageViewer extends Component {
           >
             <Icon className='fa fa-download imgBtn' />
           </a>
+        </Zoom>
+
+        <Zoom in={hoverImg} timeout={{ enter: 1000, exit:1500 }}>
+          <span className={classes.play}>
+            <Icon 
+              onClick={() => this.autoPlay()}
+              className={autoplayToggled ? 'fa fa-pause imgBtn' : 'fa fa-play imgBtn'}/>
+          </span>
         </Zoom>
 
         <Zoom in={hoverImg} timeout={200}>
