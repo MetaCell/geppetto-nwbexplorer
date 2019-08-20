@@ -13,11 +13,11 @@ import { NOTEBOOK_READY } from '../actions/notebook';
 
 function handleShowWidget (store, next, action) {
   // const instance = Instances.getInstance(path);
-  if (action.data.type === 'timeseries') { // Instances.getInstance(path).getType().wrappedObj.name
+  if (action.data.type === 'TimeSeries') { // Instances.getInstance(path).getType().wrappedObj.name
     store.dispatch(updateDetailsWidget(action.data.instancePath));
     return handlePlotTimeseries(store, next, action);
   }
-  if (action.data.type === 'imageseries') { // Instances.getInstance(path).getType().wrappedObj.name
+  if (action.data.type === 'ImageSeries') { // Instances.getInstance(path).getType().wrappedObj.name
     store.dispatch(updateDetailsWidget(action.data.instancePath));
     return handleImportTimestamps(store, next, action);
   }
@@ -48,7 +48,7 @@ function handleImportTimestamps (store, next, action) {
 function handlePlotTimeseries (store, next, action) {
   const data_path = action.data.instancePath + '.data';
   let data = Instances.getInstance(data_path);
-  const time_path = action.data.instancePath + '.time';
+  const time_path = action.data.instancePath + '.timestamps';
   let time = Instances.getInstance(time_path);
 
   if (data.getValue().wrappedObj.value.eClass == 'ImportValue') {

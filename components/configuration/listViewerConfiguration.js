@@ -48,7 +48,7 @@ const conf = [
       {
         id: "plot",
         customComponent: ColorComponent,
-        visible: entity => entity.type === 'timeseries',
+        visible: entity => entity.type === 'TimeSeries',
         source: entity => entity,
         configuration: {
           action: "clickShowPlot",
@@ -62,7 +62,7 @@ const conf = [
       {
         id: "image",
         customComponent: IconComponent,
-        visible: entity => entity.type === 'imageseries',
+        visible: entity => entity.type === 'ImageSeries',
         source: entity => entity,
         configuration: {
           action: "clickShowImg",
@@ -74,7 +74,7 @@ const conf = [
       {
         id: "addToPlot",
         customComponent: AddToPlotComponent,
-        visible: entity => entity.type === 'timeseries',
+        visible: entity => entity.type === 'TimeSeries',
         configuration: {
           icon: "gpt-addplot",
           action: "clickAddToPlot",
