@@ -69,22 +69,9 @@ export default class NWBListViewer extends Component {
   pathFilter (pathObj) {
     const { path, type } = pathObj;
     const { pathPattern } = this.props;
-    let unsupported
-
-    if (type.match(TYPE_INCLUDE_REGEX)) {
-      if (path.match(pathPattern)) {
-        return true
-      } else {
-        try {
-          return Instances.getInstance(path).getName() == "unsupported";
-        } catch (Error) {
-          return false
-        }
-      }
-    } else {
-      return false
-    }
+    return type.match(TYPE_INCLUDE_REGEX) && path.match(pathPattern)
   }
+
 
   getInstances () {
     return GEPPETTO.ModelFactory.allPaths.
