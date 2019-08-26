@@ -14,34 +14,38 @@ export default class Metadata extends React.Component {
 
   getContent (geppettoInstanceOrType) {
 
-    let metadata;
     const content = [];
 
     if (!geppettoInstanceOrType) {
       return;
     }
-   
+
     const type = (geppettoInstanceOrType instanceof Type) ? geppettoInstanceOrType : geppettoInstanceOrType.getType();
-    if (this.props.showObjectInfo){
+    if (this.props.showObjectInfo) {
       content.push(
-        this.formatCollapsible('Info', 
+        this.formatCollapsible('Info',
           [
-            this.formatField('Path', type.getId()),
+            this.formatField('Name', type.getId()),
             this.formatField('Type', type.getName()),
-          ])
+            this.formatField('Path', this.props.instancePath),
+            this.formatField('NWB Explorer support', this.getTypeSupport(type.getName())),
+          ]
+        )
       );
     }
-      
+    
+
     type.getChildren().forEach(variable => {
       const variableType = variable.getType().getName();
       let name = variable.getId();
       const { prettyFormat } = this;
+      let metadata;
 
-      if (variableType == 'Text' ) {
+      if (variableType == 'Text') {
         let value = variable.getInitialValue().value.text;
         metadata = value;
-      
-      } else if (variableType == 'map' ) {
+
+      } else if (variableType.getChildren) {
         metadata = variable.getType().getChildren().map(v => {
           if (v.getType().getName() == 'Text') {
             let name = v.getId();
@@ -56,11 +60,23 @@ export default class Metadata extends React.Component {
           this.formatCollapsible(name, metadata)
         );
       }
-      
+
     });
 
     return content;
 
+  }
+  
+  getTypeSupport (typeName) {
+    if (typeName == 'TimeSeries' || typeName == 'ImageSeries') {
+      return 'Meta data and experimental data';
+    } else if (typeName === 'Unsupported') {
+      return 'Unsupported';
+    } else if (typeName.includes('Series')) {
+      return 'Meta data and possibly experimental data';
+    } else {
+      return 'Meta data only';
+    }
   }
 
   formatCollapsible (name, metadata) {
@@ -83,10 +99,10 @@ export default class Metadata extends React.Component {
     const instance = Instances.getInstance(this.props.instancePath);
     const content = this.getContent(instance);
     return (
-      <div style={{ marginBottom:'1em' }}>
-        
+      <div style={{ marginBottom: '1em' }}>
+
         {
-          content.map((item, key) => 
+          content.map((item, key) =>
             <div key={key}>
               {item}
             </div>

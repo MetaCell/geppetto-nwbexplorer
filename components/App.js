@@ -70,12 +70,12 @@ export default class App extends React.Component{
    
     // When the extension is ready we can communicate with the notebook kernel
     GEPPETTO.on('jupyter_geppetto_extension_ready', data => {
-      const { isLoadedInNotebook, isNotebookReady } = this.props;
+
       console.log("Initializing Python extension");
-      if (!isNotebookReady) {
+      if (!this.props.isNotebookReady) {
         notebookReady();
       }   
-      if (!isLoadedInNotebook && nwbFileService.getNWBFileUrl()){
+      if (!this.props.isLoadedInNotebook && nwbFileService.getNWBFileUrl()){
         loadNWBFile(nwbFileService.getNWBFileUrl());
   
       }

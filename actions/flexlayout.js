@@ -7,13 +7,13 @@ export const RESET_LAYOUT = 'RESET_LAYOUT';
 export const DESTROY_WIDGET = 'DESTROY_WIDGET';
 export const ADD_PLOT_TO_EXISTING_WIDGET = 'ADD_PLOT_TO_EXISTING_WIDGET'
 
-export const showPlot = ({ path, type, color = 'red' }) => ({ 
+export const showPlot = ({ path, color = 'red' }) => ({ 
   type: ADD_WIDGET,
   data: {
     id: 'plot@' + path, 
     instancePath: path,
     component: 'Plot', 
-    type: type,
+    type: 'TimeSeries',
     name: path.slice(FILEVARIABLE_LENGTH),
     status: WidgetStatus.ACTIVE,
     panelName: 'bottomPanel',
@@ -23,23 +23,23 @@ export const showPlot = ({ path, type, color = 'red' }) => ({
   }
 });
 
-export const addToPlot = ({ hostId, instancePath, color, type }) => ({ 
+export const addToPlot = ({ hostId, instancePath, color }) => ({ 
   type: ADD_PLOT_TO_EXISTING_WIDGET,
   data: {
     hostId,
     instancePath,
     color,
-    type
+    type: 'TimeSeries'
   }
 });
 
-export const showImg = ({ path, type }) => ({ 
+export const showImageSeries = ({ path, type }) => ({ 
   type: ADD_WIDGET,
   data: {
     id: 'img@' + path, 
     instancePath: path,
-    component: 'Image', 
-    type: type,
+    component: 'ImageSeries', 
+    type: 'ImageSeries',
     name: path.slice(FILEVARIABLE_LENGTH),
     status: WidgetStatus.ACTIVE,
     panelName: 'bottomPanel',
@@ -59,6 +59,17 @@ export const showList = (name, pathPattern, status = WidgetStatus.ACTIVE) => ({
     panelName: 'rightTop'
   }
 });
+
+export const showSweeps = { 
+  type: ADD_WIDGET,
+  data: {
+    id: 'sweep_table', 
+    component: 'SweepTable', 
+    name: 'Sweeps',
+    status: WidgetStatus.HIDDEN,
+    panelName: 'rightTop'
+  }
+}
 
 
 export const newWidget = ({ path, component, panelName }) => ({ 

@@ -6,7 +6,7 @@ import {
   loadedNWBFileInNotebook, loadNWBFileInNotebook 
 } from '../actions/nwbfile';
 
-import { ADD_WIDGET, UPDATE_WIDGET, ADD_PLOT_TO_EXISTING_WIDGET, updateDetailsWidget } from '../actions/flexlayout';
+import { ADD_WIDGET, UPDATE_WIDGET, ADD_PLOT_TO_EXISTING_WIDGET, updateDetailsWidget, showSweeps } from '../actions/flexlayout';
 import { waitData } from '../actions/general';
 import { NOTEBOOK_READY } from '../actions/notebook';
 
@@ -83,6 +83,10 @@ const nwbMiddleware = store => next => action => {
 
   case NWB_FILE_LOADED:
     store.dispatch(loadNWBFileInNotebook);
+
+    if (Instances.getInstance('nwbfile.sweep_table')) {
+      store.dispatch(showSweeps);
+    }
     break;
 
   case LOAD_NWB_FILE_IN_NOTEBOOK:
