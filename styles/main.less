@@ -22,8 +22,6 @@ h1, h2, h3 {
     padding: 0.5em 1em;
     line-height: 1.5;
     background-color: transparent;
-    
-    
 }
 
 #mainContainer{
@@ -110,19 +108,17 @@ iframe{
         border-top-right-radius: @panelradius;
         border-bottom-right-radius: @panelradius;
         border-bottom-left-radius: @panelradius;
+
         .svg-container, .main-svg, .plot-container{
             width: 100% !important;
             height: 100% !important;
             // position: static;
         }
-        &::-webkit-scrollbar-thumb {
-                background: @secondary_color;
-                border-radius: @panelradius;
-    
-            }
-        &::-webkit-scrollbar{
-                width: 8px;
-            }
+        
+        .scrollbar;
+        * {
+            .scrollbar;
+        }
         
 
         input, button {
@@ -246,6 +242,19 @@ iframe{
     }
 }
 
+.scrollbar {
+    &::-webkit-scrollbar-thumb {
+        background: @secondary_color;
+        border-radius: @panelradius;
+
+    }
+    &::-webkit-scrollbar{
+        width: 8px;
+    }
+}
+.listviewer {
+    height: 100%;
+}
 .listviewer .list-icon {
     font-size: 20px;
 }
