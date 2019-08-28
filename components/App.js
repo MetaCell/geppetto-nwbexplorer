@@ -70,12 +70,12 @@ export default class App extends React.Component{
    
     // When the extension is ready we can communicate with the notebook kernel
     GEPPETTO.on('jupyter_geppetto_extension_ready', data => {
-      const { isLoadedInNotebook, isNotebookReady } = this.props;
+
       console.log("Initializing Python extension");
-      if (!isNotebookReady) {
+      if (!this.props.isNotebookReady) {
         notebookReady();
       }   
-      if (!isLoadedInNotebook && nwbFileService.getNWBFileUrl()){
+      if (!this.props.isLoadedInNotebook && nwbFileService.getNWBFileUrl()){
         loadNWBFile(nwbFileService.getNWBFileUrl());
   
       }
@@ -86,6 +86,14 @@ export default class App extends React.Component{
     });
     GEPPETTO.on(GEPPETTO.Events.Model_loaded, () => {
       nwbFileLoaded(Model);
+    });
+
+    
+    GEPPETTO.on(GEPPETTO.Events.Hide_spinner, () => {
+      // Handles when Geppetto is hiding the spinner on its logic
+      if (Object.values(this.props.loading).length !== 0) {
+        this.showSpinner(this.props.loading);
+      }
     });
        
   }
@@ -103,16 +111,23 @@ export default class App extends React.Component{
 
     // It would be better having the spinner as a parametrized react component
     if (Object.values(loading).length !== 0) {
-      const msg = Object.values(loading)[0];
-      setTimeout( () => {
-        GEPPETTO.trigger(GEPPETTO.Events.Show_spinner, msg);
-      }, 500);
+      this.showSpinner(loading);
     } else {
       GEPPETTO.trigger(GEPPETTO.Events.Hide_spinner);
     }
+    
   }
  
  
+  showSpinner (loading) {
+    if (Object.values(loading).length !== 0) {
+      const msg = Object.values(loading)[0];
+      setTimeout(() => {
+        GEPPETTO.trigger(GEPPETTO.Events.Show_spinner, msg);
+      }, 500);
+    } 
+  }
+
   render () {
     const { model, embedded, showNotebook, isLoadedInNotebook } = this.props;
     
@@ -133,7 +148,13 @@ export default class App extends React.Component{
           
 
         </div>
-        <div style={{ display: "none" }}>{getConsole()}</div>
+        <div style={{ display: "none" }}>
+          {
+
+            getConsole()
+
+          }
+        </div>
         
       </div>
     )

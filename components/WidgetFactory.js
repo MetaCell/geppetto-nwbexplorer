@@ -3,6 +3,7 @@ const NWBPlot = lazy(() => import('./NWBPlot'));
 import FileExplorerPage from './pages/FileExplorerPage';
 import Metadata from './Metadata';
 import NWBListViewer from './reduxconnect/NWBListViewerContainer';
+import SweepTableViewer from './reduxconnect/SweepTableViewerContainer';
 import ImageViewer from './ImageViewer';
 import { getConsole } from '../services/NotebookService';
 
@@ -45,7 +46,7 @@ export default class WidgetFactory{
         ? <Metadata instancePath = { instancePath } showObjectInfo = { showObjectInfo } /> 
         : '';
     }    
-    case "Image": {
+    case "ImageSeries": {
       const { instancePath } = widgetConfig;
       if (!instancePath){
         throw new Error('Image widget instancePath must be configured')
@@ -68,9 +69,12 @@ export default class WidgetFactory{
       )
     } 
     case "ListViewer": {
-      const { pathPattern } = widgetConfig;
+      const { pathPattern, typePattern } = widgetConfig;
     
-      return <NWBListViewer pathPattern={pathPattern}></NWBListViewer>;
+      return <NWBListViewer pathPattern={pathPattern} typePattern={typePattern}></NWBListViewer>;
+    }
+    case "SweepTable": {    
+      return <SweepTableViewer />;
     }
     case "PythonConsole": {
     

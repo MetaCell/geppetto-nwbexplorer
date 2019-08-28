@@ -46,7 +46,7 @@ export default class NWBTimeseriesPlotComponent extends React.Component {
     const { instancePath, guestList, color = 'white' } = this.props;
 
     const plots = [{ 
-      x: `${instancePath}.time`,
+      x: `${instancePath}.timestamps`,
       y: `${instancePath}.data`,
       lineOptions: { color: color }
     }]
@@ -54,7 +54,7 @@ export default class NWBTimeseriesPlotComponent extends React.Component {
     if (guestList && guestList.length > 0) {
       plots.push(
         ...guestList.map(guest => ({ 
-          x: `${guest.instancePath}.time`,
+          x: `${guest.instancePath}.timestamps`,
           y: `${guest.instancePath}.data`,
           lineOptions: { color: guest.color }
         }))

@@ -14,6 +14,11 @@ import { FILEVARIABLE_LENGTH } from '../constants';
 ``
 const conf = [
   {
+    id: "sweep",
+    title: "Sweep #",
+    source: ({ path }) => Instances.getInstance(path + '.sweep_number').getValue().wrappedObj.value.text,
+  },
+  {
     id: "path",
     title: "Path",
     source: ({ path }) => path.slice(FILEVARIABLE_LENGTH),
@@ -28,7 +33,6 @@ const conf = [
     title: "Description",
     source: 'description',
   },
-  
   {
     id: "controls",
     title: "Controls",
@@ -48,7 +52,6 @@ const conf = [
       {
         id: "plot",
         customComponent: ColorComponent,
-        visible: entity => Instances.getInstance(entity.path + '.data') && Instances.getInstance(entity.path + '.timestamps'),
         source: entity => entity,
         configuration: {
           action: "clickShowPlot",
@@ -60,21 +63,9 @@ const conf = [
         },
       },
       {
-        id: "image",
-        customComponent: IconComponent,
-        visible: entity => entity.type === 'ImageSeries',
-        source: entity => entity,
-        configuration: {
-          action: "clickShowImg",
-          icon: "picture-o",
-          label: "Plot",
-          tooltip: "Plot image series"
-        },
-      },
-      {
         id: "addToPlot",
         customComponent: AddToPlotComponent,
-        visible: entity => Instances.getInstance(entity.path + '.data') && Instances.getInstance(entity.path + '.timestamps'),
+        visible: true,
         configuration: {
           icon: "gpt-addplot",
           action: "clickAddToPlot",

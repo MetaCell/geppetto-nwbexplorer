@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import NWBListViewer from '../NWBListViewer';
+import SweepTableViewer from '../SweepTableViewer';
 import { showPlot, showImageSeries, updateDetailsWidget, addToPlot } from '../../actions/flexlayout';
 
 const mapStateToProps = state => ({ modelSettings: state.nwbfile.modelSettings });
@@ -11,4 +11,4 @@ const mapDispatchToProps = dispatch => ({
   updateDetailsWidget: path => dispatch(updateDetailsWidget(path)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(NWBListViewer);
+export default connect(mapStateToProps, mapDispatchToProps)(SweepTableViewer);
