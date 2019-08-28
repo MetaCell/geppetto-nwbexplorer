@@ -63,14 +63,14 @@ export default class Appbar extends React.Component {
                 <IconButton
                   onClick={() => this.handleClickBack()}
                 >
-                  <Icon color="error" className='fa fa-arrow-left' title="Back" />
+                  <Icon color="error" className='fa fa-home' title="Back" />
                 </IconButton>
                 
                 
                 <IconButton 
                   onClick={() => this.handleShowLists()}
                 >
-                  <Icon color="error" className='fa fa-window-restore' title="restore default lists" />
+                  <Icon color="error" className='fa fa-sitemap' title="restore default lists" />
                 </IconButton>
 
                 <IconButton 

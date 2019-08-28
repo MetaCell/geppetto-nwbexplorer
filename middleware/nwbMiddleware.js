@@ -80,9 +80,8 @@ const nwbMiddleware = store => next => action => {
   case LOAD_NWB_FILE:
     Project.loadFromURL(action.data.nwbFileUrl);
     break;
-
   case NWB_FILE_LOADED:
-    store.dispatch(loadNWBFileInNotebook);
+    
 
     if (Instances.getInstance('nwbfile.sweep_table')) {
       store.dispatch(showSweeps);
@@ -102,6 +101,7 @@ const nwbMiddleware = store => next => action => {
   case NOTEBOOK_READY:
     // FIXME for some reason the callback for python messages is not being always called
     Utils.execPythonMessage('from nwb_explorer.nwb_main import main');
+    store.dispatch(loadNWBFileInNotebook);
     break;
 
   case UPDATE_WIDGET:
