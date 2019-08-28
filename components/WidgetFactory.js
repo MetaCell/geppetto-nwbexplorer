@@ -50,7 +50,8 @@ export default class WidgetFactory{
       if (!instancePath){
         throw new Error('Image widget instancePath must be configured')
       }
-      return <ImageViewer 
+      return <ImageViewer
+        numberOfImagesToPreload={2}
         imagePaths={this.extractImageSeriesPaths(instancePath)} 
         timestamps={this.extractImageSeriesTimestamps(instancePath)}
       />

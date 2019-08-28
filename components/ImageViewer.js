@@ -65,13 +65,36 @@ class ImageViewer extends Component {
     activeStep: 0,
     imageLoading: true
   };
-
+  cachedImage = []
   headerButtons = ["download", "play", "pause"]
   showNextImage = this.showNextImage.bind(this);
+  
+  componentDidMount () {
+    const { imagePaths } = this.props;
+    if (imagePaths === undefined) {
+      console.warn("Prop imagePaths in geppetto-client/ImageViewer shouldn't be undefined.")
+    } else {
+      this.cachedImage = imagePaths.map(() => false)
+    }
+    
+  }
 
   handleNext = step => {
-    this.setState(({ activeStep }) => ({ activeStep: activeStep + step }));
-    this.setState({ imageLoading: true })
+    const { activeStep } = this.state
+    const { timestamps } = this.props
+
+    let nextImageIndex = activeStep + step
+    if (nextImageIndex == timestamps.length) {
+      nextImageIndex = 0
+    } else if (nextImageIndex < 0){
+      nextImageIndex = timestamps.length - 1
+    }
+
+    this.setState({ 
+      activeStep: nextImageIndex, 
+      imageLoading: !this.cachedImage[nextImageIndex]
+    });
+    
   };
 
   clickImage = (e, num_samples) => {
@@ -82,24 +105,38 @@ class ImageViewer extends Component {
     
     if (!this.headerButtons.some(iconName => className.includes(iconName))) {
       if (offsetX > offsetWidth / 2) {
-        if (activeStep < num_samples - 1) {
-          this.handleNext(+1)
-        }
+        this.handleNext(+1)
       } else {
-        if (activeStep > 0) {
-          this.handleNext(-1)
-        }
+        this.handleNext(-1)
       }
     }
   }
 
   showNextImage () {
     const { timestamps } = this.props
-    this.setState(({ activeStep }) => ({ 
-      activeStep: activeStep < timestamps.length - 1 ? activeStep + 1 : 0,
-      imageLoading: true
-    }))
+    const { activeStep } = this.state
+    const nextImageIndex = activeStep < timestamps.length - 1 ? activeStep + 1 : 0
     
+    this.setState({ 
+      activeStep: nextImageIndex,
+      imageLoading: !this.cachedImage[nextImageIndex]
+    })
+  }
+
+  onLoadImage (activeStep, numberOfImages, numberOfImagesToPreload) {
+    // hide spinning wheel
+    if (!this.cachedImage[activeStep]) {
+      this.cachedImage[activeStep] = true
+      this.setState({ imageLoading: false })
+    }
+    // preload next images
+    if (activeStep < numberOfImages - numberOfImagesToPreload && !this.cachedImage[activeStep + 1]) {
+      const { imagePaths } = this.props
+      Array(numberOfImagesToPreload).fill(false).forEach((el, index) => {
+        let img = new Image()
+        img.src = imagePaths[activeStep + index + 1]
+      })
+    }
   }
 
   autoPlay () {
@@ -114,7 +151,7 @@ class ImageViewer extends Component {
   } 
   
   render () {
-    const { imagePaths, timestamps, classes } = this.props;
+    const { imagePaths, timestamps, numberOfImagesToPreload = 1, classes } = this.props;
     const { activeStep, hoverImg, imageLoading, autoplayToggled } = this.state;
     
     return (
@@ -134,7 +171,7 @@ class ImageViewer extends Component {
         <img
           className={classes.img}
           src={imagePaths[activeStep]}
-          onLoad={() => this.setState({ imageLoading: false })}
+          onLoad={() => this.onLoadImage(activeStep, timestamps.length, numberOfImagesToPreload)}
         />
 
         {imageLoading && <CircularProgress
@@ -144,7 +181,7 @@ class ImageViewer extends Component {
         />}
 
         <p className={classes.watermarkRight}>{timestamps[activeStep]}</p>
-        <p className={classes.watermarkLeft}>{`${activeStep}/${timestamps.length}`}</p>
+        <p className={classes.watermarkLeft}>{`${activeStep}/${timestamps.length - 1}`}</p>
 
         <Zoom in={hoverImg} timeout={{ enter: 1000, exit:1500 }}>
           <a download
