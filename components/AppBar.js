@@ -13,9 +13,9 @@ export default class Appbar extends React.Component {
   constructor (props) {
     super(props);
     this.exit = this.props.exit ? this.props.exit : () => console.debug('exit not defined in ' + typeof this);
-    this.showList = this.props.showList ? this.props.showList : () => console.debug('showPlot not defined in ' + typeof this);
-   
-  
+    this.showList = this.props.showList ? this.props.showList : () => console.debug('showList not defined in ' + typeof this);
+    this.showAcquisition = this.props.showAcquisition ? this.props.showAcquisition : () => console.debug('showAcquisition not defined in ' + typeof this);
+    this.showStimulus = this.props.showStimulus ? this.props.showStimulus : () => console.debug('showStimulus not defined in ' + typeof this);
   }
 
   componentDidMount () {
@@ -32,8 +32,12 @@ export default class Appbar extends React.Component {
   }
 
   handleShowLists () {
-    this.showList('Acquisition', 'nwbfile.acquisition.');
-    this.showList('Stimulus', 'nwbfile.stimulus.', WidgetStatus.HIDDEN);
+    this.showAcquisition();
+    this.showStimulus();
+  }
+
+  handleShowAll () {
+    this.showList('Content index', "nwbfile.", "^(?!LabelledDict).*")
   }
   
   render () {
@@ -59,16 +63,21 @@ export default class Appbar extends React.Component {
                 <IconButton
                   onClick={() => this.handleClickBack()}
                 >
-                  <Icon color="error" className='fa fa-arrow-left' />
+                  <Icon color="error" className='fa fa-arrow-left' title="Back" />
                 </IconButton>
                 
                 
                 <IconButton 
                   onClick={() => this.handleShowLists()}
                 >
-                  <Icon color="error" className='fa fa-list' />
+                  <Icon color="error" className='fa fa-window-restore' title="restore default lists" />
                 </IconButton>
-                
+
+                <IconButton 
+                  onClick={() => this.handleShowAll()}
+                >
+                  <Icon color="error" className='fa fa-list' title="Show all content" />
+                </IconButton>
               </Grid>
             </Grid>
           </Toolbar>

@@ -17,7 +17,7 @@ export default class NWBListViewer extends Component {
     this.updateDetailsWidget = this.props.updateDetailsWidget ? this.props.updateDetailsWidget : () => console.debug('updateDetailsWidget not defined in ' + typeof this);
     this.modelSettings = {};
     this.state = { update: 0 }
-    this.pathFilter = this.props.pathFilter ? this.props.pathFilter.bind(this) : this.pathFilter.bind(this);
+    this.filter = this.props.filter ? this.props.filter.bind(this) : this.filter.bind(this);
   }
 
   componentDidUpdate () {
@@ -72,15 +72,15 @@ export default class NWBListViewer extends Component {
     this.addToPlot(props)
   }
 
-  pathFilter (pathObj) {
+  filter (pathObj) {
     const { path, type } = pathObj;
-    const { pathPattern } = this.props;
+    const { pathPattern, typePattern } = this.props;
 
     if (type.match(TYPE_INCLUDE_REGEX)) {
       if (path.match(pathPattern)) {
         let instance = Instances.getInstance(path);
         if (instance.getPath) {
-          return true
+          return instance.getType().getName().match(typePattern);
         }
 
 
@@ -93,7 +93,7 @@ export default class NWBListViewer extends Component {
 
   getInstances () {
     return GEPPETTO.ModelFactory.allPaths.
-      filter(this.pathFilter)
+      filter(this.filter)
       .map(({ path }) => this.mapModelPathToList(path));
   }
 

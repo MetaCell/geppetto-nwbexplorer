@@ -13,7 +13,7 @@ export default class SweepTableViewer extends NWBListViewer {
     super(props);
   }
 
-  pathFilter (pathObj) {
+  filter (pathObj) {
     const { path, type } = pathObj;
 
     if (type.match(TYPE_INCLUDE_REGEX)) {

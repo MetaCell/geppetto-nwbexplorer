@@ -5,13 +5,11 @@ import {
   DESTROY_WIDGET,
   ACTIVATE_WIDGET,
   ADD_PLOT_TO_EXISTING_WIDGET,
-  showList
+  showList, showAcquisition, showStimulus
 } from '../actions/flexlayout';
 
 import { WidgetStatus } from '../components/constants';
 
-const acquisitionWidget = showList('Acquisition', 'nwbfile.acquisition.').data;
-const stimulusWidget = showList('Stimulus', 'nwbfile.stimulus.', WidgetStatus.HIDDEN).data;
 
 function removeUndefined (obj) {
   return Object.keys(obj).forEach(key => obj[key] === undefined ? delete obj[key] : '');
@@ -46,8 +44,8 @@ export const FLEXLAYOUT_DEFAULT_STATUS = {
       enableClose: false
     },
     
-    [acquisitionWidget.id]: acquisitionWidget ,
-    [stimulusWidget.id]: stimulusWidget ,
+    [showAcquisition.data.id]: showAcquisition.data ,
+    [showStimulus.data.id]: showStimulus.data ,
     
   },
 

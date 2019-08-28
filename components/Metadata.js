@@ -36,26 +36,21 @@ export default class Metadata extends React.Component {
     
 
     type.getChildren().forEach(variable => {
-      const variableType = variable.getType().getName();
+      const variableType = variable.getType();
+  
       let name = variable.getId();
       const { prettyFormat } = this;
       let metadata;
 
-      if (variableType == 'Text') {
+      if (variableType.getName() == 'Text') {
         let value = variable.getInitialValue().value.text;
         metadata = value;
 
-      } else if (variableType.getChildren) {
-        metadata = variable.getType().getChildren().map(v => {
-          if (v.getType().getName() == 'Text') {
-            let name = v.getId();
-            let value = v.getInitialValue().value.text;
-            return this.formatField(prettyFormat(name), value);
-          }
-        });
+      } else if (variableType.getChildren && variableType.getChildren()) {
+        metadata = variable.getType().getChildren().filter(v => v.getType().getName() == 'Text').map(v => this.formatField(prettyFormat(v.getId()), v.getInitialValue().value.text));
       }
 
-      if (metadata) {
+      if (metadata && metadata.length) {
         content.push(
           this.formatCollapsible(name, metadata)
         );
@@ -69,13 +64,13 @@ export default class Metadata extends React.Component {
   
   getTypeSupport (typeName) {
     if (typeName == 'TimeSeries' || typeName == 'ImageSeries') {
-      return 'Meta data and experimental data';
+      return 'Metadata and experimental data';
     } else if (typeName === 'Unsupported') {
       return 'Unsupported';
     } else if (typeName.includes('Series')) {
-      return 'Meta data and possibly experimental data';
+      return 'Partial: metadata and possibly experimental data';
     } else {
-      return 'Meta data only';
+      return 'Partial: metadata only';
     }
   }
 

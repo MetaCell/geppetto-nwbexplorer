@@ -68,9 +68,9 @@ export default class WidgetFactory{
       )
     } 
     case "ListViewer": {
-      const { pathPattern } = widgetConfig;
+      const { pathPattern, typePattern } = widgetConfig;
     
-      return <NWBListViewer pathPattern={pathPattern}></NWBListViewer>;
+      return <NWBListViewer pathPattern={pathPattern} typePattern={typePattern}></NWBListViewer>;
     }
     case "SweepTable": {    
       return <SweepTableViewer />;

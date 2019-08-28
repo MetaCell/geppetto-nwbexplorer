@@ -48,17 +48,22 @@ export const showImageSeries = ({ path, type }) => ({
 });
 
 
-export const showList = (name, pathPattern, status = WidgetStatus.ACTIVE) => ({ 
+export const showList = (name, pathPattern, typePattern, status = WidgetStatus.ACTIVE) => ({ 
   type: ADD_WIDGET,
   data: {
     id: 'list@' + pathPattern, 
-    pathPattern: pathPattern, 
+    pathPattern: pathPattern instanceof RegExp ? pathPattern.source : pathPattern, 
+    typePattern: typePattern instanceof RegExp ? typePattern.source : typePattern,
     component: 'ListViewer', 
     name: name,
     status: status,
     panelName: 'rightTop'
   }
 });
+
+export const showAcquisition = showList('Acquisition', "^nwbfile\\.acquisition\\.", /Series$/);
+
+export const showStimulus = showList('Stimulus', /^nwbfile\\.stimulus\\./, /Series$/, WidgetStatus.HIDDEN);
 
 export const showSweeps = { 
   type: ADD_WIDGET,
